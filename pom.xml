@@ -8,5 +8,7 @@
     <artifactId>testing</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-
+    <properties>
+        <abc>def</abc>
+    </properties>
 </project>
