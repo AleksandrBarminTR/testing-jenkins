@@ -1,0 +1,35 @@
+def repos = [
+    "https://github.com/AleksandrBarminTR/testing-jenkins.git"
+    ]
+
+pipeline {
+    agent any
+    parameters {
+        string(name: 'SOURCE_BRANCH', defaultValue: 'dev', description: 'Branch to start a new branch from')
+        string(name: 'TARGET_BRANCH', defaultValue: 'release-0.1', description: 'Name of a new branch to create')
+    }
+
+    stages {
+        stage('Update repos') {
+            steps {
+                script {
+                    repos.eachWithIndex { repo, index ->
+                        dir("repository_" + index) {
+                            echo "Processing repository ${repo}"
+
+                            deleteDir()
+                            git credentialsId: 'TR_GH_ACCOUNT', url: repo
+                            sh "git checkout ${params.SOURCE_BRANCH}"
+                            sh "git checkout -b ${params.TARGET_BRANCH}"
+
+                            withCredentials([usernamePassword(credentialsId: 'TR_GH_ACCOUNT', passwordVariable: 'TR_PASSWORD', usernameVariable: 'TR_USERNAME')]) {
+                                def repositoryUrl = "https://${TR_USERNAME}:${TR_PASSWORD}@" + repo.replaceFirst(".+://", "")
+                                sh "git push ${repositoryUrl}"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
