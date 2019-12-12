@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>testing</artifactId>
-    <version>1.6-SNAPSHOT</version>
+    <version>1.6</version>
 
     <properties>
         <abc>def</abc>
